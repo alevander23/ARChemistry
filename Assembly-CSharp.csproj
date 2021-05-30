@@ -64,8 +64,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Vuforia Scripts\BeakerCollisions.cs" />
     <Compile Include="Assets\Scripts\Vuforia Scripts\EventHandler.cs" />
-    <Compile Include="Assets\Scripts\Vuforia Scripts\ObjectCreator.cs" />
+    <Compile Include="Assets\Scripts\Vuforia Scripts\Events.cs" />
+    <Compile Include="Assets\Scripts\Vuforia Scripts\Object Creator.cs" />
     <Compile Include="Assets\Scripts\Vuforia Scripts\TargetManager.cs" />
     <None Include="Assets\Vuforia\Shaders\ColoredLines.shader" />
     <None Include="Assets\Vuforia\Shaders\CameraDiffuse.shader" />

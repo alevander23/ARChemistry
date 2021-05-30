@@ -51,7 +51,6 @@ public class EventHandler : MonoBehaviour, ITrackableEventHandler
             if (newStatus == trackedStatus)
             {
                 if (OnTrackingFound != null)
-                    print('2');
                     OnTrackingFound();
 
                 print("Tracking Found");

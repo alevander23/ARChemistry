@@ -60,6 +60,7 @@ public class TargetManager : MonoBehaviour
 
     private void SetupTargets(List<TrackableBehaviour> allTargets)
     {
+ 
         foreach (TrackableBehaviour target in allTargets)
         {
             //Parent
@@ -69,23 +70,21 @@ public class TargetManager : MonoBehaviour
             target.gameObject.name = target.TrackableName;
 
             //Add Functionality
-            if (target.name == "Beaker")
+            if (target.gameObject.name == "Beaker")
             {
-                print('1');
+                print(target.gameObject.name + " Target Manager");
                 target.gameObject.AddComponent<ObjectCreator>();
-                Debug.Log("Beaker Created");
             }
-            if (target.name == "Chemical")
+            else if (target.gameObject.name == "Chemical")
             {
-                target.gameObject.AddComponent<ObjectCreator>();
-                Debug.Log("Chemical Created");
+                print(target.gameObject.name + " Target Manager");
+                target.gameObject.AddComponent<EventHandler>();
             }
-            if (target.name == "AR_marker")
+            else if (target.gameObject.name == "AR_marker")
             {
-                target.gameObject.AddComponent<ObjectCreator>();
-                Debug.Log("Test Tube Created");
+                print(this.gameObject.name + " Target Manager");
+                target.gameObject.AddComponent<EventHandler>();
             }
-
         }
     }
 }
