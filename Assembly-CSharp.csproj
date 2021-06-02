@@ -64,14 +64,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Vuforia Scripts\BeakerCollisions.cs" />
+    <Compile Include="Assets\Scripts\Chemistry Scripts\Chemical.cs" />
+    <Compile Include="Assets\Scripts\Chemistry Scripts\ChemicalManager.cs" />
+    <Compile Include="Assets\Scripts\Chemistry Scripts\Reaction.cs" />
+    <Compile Include="Assets\Scripts\Chemistry Scripts\ReactionManager.cs" />
+    <Compile Include="Assets\Scripts\Object Scripts\BeakerManager.cs" />
     <Compile Include="Assets\Scripts\Vuforia Scripts\EventHandler.cs" />
-    <Compile Include="Assets\Scripts\Vuforia Scripts\Events.cs" />
     <Compile Include="Assets\Scripts\Vuforia Scripts\Object Creator.cs" />
     <Compile Include="Assets\Scripts\Vuforia Scripts\TargetManager.cs" />
     <None Include="Assets\Vuforia\Shaders\ColoredLines.shader" />
     <None Include="Assets\Vuforia\Shaders\CameraDiffuse.shader" />
+    <None Include="Assets\StreamingAssets\Vuforia\Beaker.xml" />
     <None Include="Assets\Vuforia\Shaders\VertexLitWithZ.shader" />
+    <None Include="Assets\Resources\Reactions.txt" />
     <None Include="Assets\Vuforia\Shaders\VideoBackground.shader" />
     <None Include="Assets\Vuforia\Shaders\OutlineOpaque.shader" />
     <None Include="Assets\Vuforia\Shaders\DepthMask.shader" />
@@ -80,7 +85,7 @@
     <None Include="Assets\Vuforia\Shaders\ClippingMask.shader" />
     <None Include="Assets\Vuforia\Shaders\BrightTexture.shader" />
     <None Include="Assets\Vuforia\Shaders\DepthContour.shader" />
-    <None Include="Assets\StreamingAssets\Vuforia\Beaker.xml" />
+    <None Include="Assets\Resources\Chemicals.txt" />
     <None Include="Assets\Vuforia\Shaders\Text3D.shader" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/Users/Alexander/Desktop/Augmented Chemistry/Programs/ARChemistry/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>

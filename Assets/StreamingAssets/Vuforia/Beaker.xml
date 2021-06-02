@@ -1,8 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
   <Tracking>
+    <ImageTarget name="32" size="0.050000 0.050000" />
+    <ImageTarget name="31" size="0.050000 0.050000" />
+    <ImageTarget name="30" size="0.050000 0.050000" />
+    <ImageTarget name="29" size="0.050000 0.050000" />
+    <ImageTarget name="28" size="0.050000 0.050000" />
+    <ImageTarget name="27" size="0.050000 0.050000" />
+    <ImageTarget name="26" size="0.050000 0.050000" />
+    <ImageTarget name="25" size="0.050000 0.050000" />
+    <ImageTarget name="24" size="0.050000 0.050000" />
+    <ImageTarget name="23" size="0.050000 0.050000" />
+    <ImageTarget name="22" size="0.050000 0.050000" />
+    <ImageTarget name="21" size="0.050000 0.050000" />
+    <ImageTarget name="20" size="0.050000 0.050000" />
+    <ImageTarget name="19" size="0.050000 0.050000" />
+    <ImageTarget name="18" size="0.050000 0.050000" />
+    <ImageTarget name="17" size="0.050000 0.050000" />
+    <ImageTarget name="16" size="0.050000 0.050000" />
+    <ImageTarget name="15" size="0.050000 0.050000" />
+    <ImageTarget name="14" size="0.050000 0.050000" />
+    <ImageTarget name="13" size="0.050000 0.050000" />
+    <ImageTarget name="12" size="0.050000 0.050000" />
+    <ImageTarget name="11" size="0.050000 0.050000" />
+    <ImageTarget name="10" size="0.050000 0.050000" />
+    <ImageTarget name="9" size="0.050000 0.050000" />
+    <ImageTarget name="8" size="0.050000 0.050000" />
+    <ImageTarget name="7" size="0.050000 0.050000" />
+    <ImageTarget name="6" size="0.050000 0.050000" />
+    <ImageTarget name="5" size="0.050000 0.050000" />
+    <ImageTarget name="4" size="0.050000 0.050000" />
+    <ImageTarget name="3" size="0.050000 0.050000" />
+    <ImageTarget name="2" size="0.050000 0.050000" />
+    <ImageTarget name="1" size="0.050000 0.050000" />
+    <ImageTarget name="0" size="0.050000 0.050000" />
+    <ImageTarget name="Test_Tube" size="0.100000 0.100000" />
     <ImageTarget name="Beaker" size="0.080000 0.080000" />
-    <ImageTarget name="Chemical" size="0.100000 0.100000" />
-    <ImageTarget name="AR_marker" size="0.100000 0.100000" />
   </Tracking>
 </QCARConfig>

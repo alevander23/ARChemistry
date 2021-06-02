@@ -7,6 +7,7 @@ using UnityEngine.Events;
 
 public class EventHandler : MonoBehaviour, ITrackableEventHandler
 {
+    //These UnityActions I can add my own methods to determine what should happen once a target image has been found
     public UnityAction OnTrackingFound;
     public UnityAction OnTrackingLost;
     public UnityAction OnSetupCalled;
@@ -20,6 +21,7 @@ public class EventHandler : MonoBehaviour, ITrackableEventHandler
         TrackableBehaviour.Status.DETECTED,
         TrackableBehaviour.Status.TRACKED,
 
+        //I dont really know what this is but I don't need it anyways.
         /*//Device positioning
         TrackableBehaviour.Status.EXTENDED_TRACKED*/
 
@@ -50,6 +52,7 @@ public class EventHandler : MonoBehaviour, ITrackableEventHandler
         {
             if (newStatus == trackedStatus)
             {
+                //Call OnTrackingFound (which has my own custom methods added to it in the object creator script)
                 if (OnTrackingFound != null)
                     OnTrackingFound();
 
@@ -63,6 +66,7 @@ public class EventHandler : MonoBehaviour, ITrackableEventHandler
         {
             if (newStatus == trackedStatus)
             {
+                //Call OnTrackingLost (ditto up top)
                 if (OnTrackingLost != null)
                     OnTrackingLost();
 

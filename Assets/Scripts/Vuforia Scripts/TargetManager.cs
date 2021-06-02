@@ -10,9 +10,18 @@ public class TargetManager : MonoBehaviour
 
     private List<TrackableBehaviour> mAllTargets = new List<TrackableBehaviour>();
 
+
+    //Load Chemistry
+    private ChemicalManager chemManager;
+
+    private ReactionManager reactionManager;
+
     private void Awake()
     {
         VuforiaARController.Instance.RegisterVuforiaStartedCallback(OnVuforiaStarted);
+        chemManager = new ChemicalManager();
+        print(chemManager + "Instance of Chemical Manager");
+        reactionManager = new ReactionManager();
     }
 
     private void OnDestroy()
@@ -23,13 +32,13 @@ public class TargetManager : MonoBehaviour
 
     private void OnVuforiaStarted()
     {
-        //Load database
+        //Loads the vuforia database which are downloaded as a package containing all of the target images.
         LoadDatabase(mDatabaseName);
 
-        //Get trackable targets
+        //Creates a list of all the trackable images and assigns trackablebehaviours to them.
         mAllTargets = GetTargets();
 
-        //Set up targets
+        //Sets up the Attributes and functionality of the targets.
         SetupTargets(mAllTargets);
     }
 
@@ -50,6 +59,7 @@ public class TargetManager : MonoBehaviour
         objectTracker.Start();
     }
 
+    
     private List<TrackableBehaviour> GetTargets()
     {
         List<TrackableBehaviour> allTrackables = new List<TrackableBehaviour>();
@@ -60,7 +70,6 @@ public class TargetManager : MonoBehaviour
 
     private void SetupTargets(List<TrackableBehaviour> allTargets)
     {
- 
         foreach (TrackableBehaviour target in allTargets)
         {
             //Parent
@@ -70,21 +79,19 @@ public class TargetManager : MonoBehaviour
             target.gameObject.name = target.TrackableName;
 
             //Add Functionality
-            if (target.gameObject.name == "Beaker")
-            {
-                print(target.gameObject.name + " Target Manager");
-                target.gameObject.AddComponent<ObjectCreator>();
-            }
-            else if (target.gameObject.name == "Chemical")
-            {
-                print(target.gameObject.name + " Target Manager");
-                target.gameObject.AddComponent<EventHandler>();
-            }
-            else if (target.gameObject.name == "AR_marker")
-            {
-                print(this.gameObject.name + " Target Manager");
-                target.gameObject.AddComponent<EventHandler>();
-            }
+            print(target.name + " Target Manager");
+            target.gameObject.AddComponent<ObjectCreator>();
         }
+    }
+
+    //These are my methods which I have created to attempt and pass chemical manager through to all the other classes
+    public ChemicalManager GetChemicalManager()
+    {
+        return chemManager;
+    }
+
+    public ReactionManager GetReactionManager()
+    {
+        return reactionManager;
     }
 }
