@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,15 +7,12 @@ public class BeakerManager : MonoBehaviour
 {
     #region Attributes
 
-    private TargetManager targetManager;
-
     private ChemicalManager chemicalManager;
 
     private ReactionManager reactionManager;
 
     private List<Chemical> BeakerChemicals = new List<Chemical>();
 
-    //There is probably a way to do this using OOP but I don't know it and this solution is fine for the purposes as these lists are very short
     private List<string> BeakerChemicalsChecker = new List<string>();
    
     private int Volume;
@@ -24,22 +22,34 @@ public class BeakerManager : MonoBehaviour
 
     private void Awake()
     {
-        targetManager = GameObject.FindObjectOfType<TargetManager>();
-        chemicalManager = targetManager.GetChemicalManager();
-        reactionManager = targetManager.GetReactionManager();
+        chemicalManager = GameObject.Find("TargetManager").GetComponent<ChemicalManager>();
+        reactionManager = GameObject.Find("TargetManager").GetComponent<ReactionManager>();
         Volume = 0;
 
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Chemical")
+        //Deletes collider object
+        string pillName = other.name;
+        Destroy(other);
+        GameObject pill = GameObject.Find(pillName);
+        Destroy(pill);
+
+        print(other.name + " Triggered");
+        if (other.name == "Beaker" || other.name == "Test_Tube")
+        {
+
+        }
+        else
         {
             //Adds new chemical to Beaker
             AddChemical(other);
 
-            //Deletes collider object
-            Destroy(other);
+            foreach (Chemical chemical in BeakerChemicals)
+            {
+                print(chemical.ChemicalName);
+            }
 
             //If Beaker has multiple chemicals check to see if reaction is possible
             if (BeakerChemicals.Count > 1)
@@ -47,6 +57,7 @@ public class BeakerManager : MonoBehaviour
                 CheckReaction();
             }
             UpdateBeaker();
+
         }
     }
     #endregion
@@ -58,9 +69,12 @@ public class BeakerManager : MonoBehaviour
         {
             if (chemical.ChemicalName == other.name)
             {
+                print(chemical.ChemicalName + "Add Chemical");
                 BeakerChemicalsChecker.Add(chemical.ChemicalName);
                 BeakerChemicals.Add(chemical);
+                print(Convert.ToString(Volume));
                 Volume++;
+                print(Convert.ToString(Volume));
             }
         }
     }
@@ -106,8 +120,8 @@ public class BeakerManager : MonoBehaviour
     private void UpdateBeaker()
     {
         //Referencing beaker and contents GameObjects
-        GameObject Beaker = GameObject.Find("Beaker");
-        GameObject Cylinder = Beaker.transform.GetChild(0).gameObject;
+        GameObject Beaker = GameObject.Find("BeakerObject");
+        GameObject Cylinder = GameObject.Find("Volume");
         MeshRenderer CylinderRenderer = Cylinder.GetComponent<MeshRenderer>();
 
         //Working out what color the solution will be
@@ -152,19 +166,28 @@ public class BeakerManager : MonoBehaviour
         }
 
         //Blending the colors of all chemicals in solution. 
+        print(colors.Count);
+        print(red);
+        print(green);
+        print(blue);
         red /= colors.Count;
         blue /= colors.Count;
         green /= colors.Count;
         alpha /= colors.Count;
 
+        print(red);
+        print(green);
+        print(blue);
         Color SolutionColor = new Color(red, blue, green, alpha);
         return SolutionColor;
     }
 
     private void ChangeVolume(GameObject Cylinder)
+        //0.05 starting height of volume - 0.1 is good scale for one unit new height is scale + starting height
     {
-        Cylinder.transform.localScale = new Vector3(0, 0.0001f*Volume, 0);
-        Cylinder.transform.localPosition = new Vector3(0, 0, (-0.00025f+Volume*0.0001f));
+        Cylinder.transform.localScale = new Vector3(0.5624999f, 0.1f*Volume, 0.5624999f);
+        print("Volume = " + Convert.ToString(Volume));
+        Cylinder.transform.localPosition = new Vector3(0f, (0.05f + (Volume * 0.1f)), 0f);
     }
     #endregion
 

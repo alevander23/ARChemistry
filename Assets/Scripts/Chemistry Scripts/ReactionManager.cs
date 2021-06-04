@@ -2,13 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ReactionManager 
+public class ReactionManager : MonoBehaviour
 {
     private List<Reaction> reactions = new List<Reaction>();
 
     public List<Reaction> Reactions { get => reactions; set => reactions = value; }
 
-    void Start()
+    void Awake()
     {
         /*this.gameObject.AddComponent<Reaction>();*/
         TextAsset reactionsAsset = (TextAsset)Resources.Load("Reactions", typeof(TextAsset));

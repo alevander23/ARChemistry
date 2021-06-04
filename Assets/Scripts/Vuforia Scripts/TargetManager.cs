@@ -10,18 +10,9 @@ public class TargetManager : MonoBehaviour
 
     private List<TrackableBehaviour> mAllTargets = new List<TrackableBehaviour>();
 
-
-    //Load Chemistry
-    private ChemicalManager chemManager;
-
-    private ReactionManager reactionManager;
-
     private void Awake()
     {
         VuforiaARController.Instance.RegisterVuforiaStartedCallback(OnVuforiaStarted);
-        chemManager = new ChemicalManager();
-        print(chemManager + "Instance of Chemical Manager");
-        reactionManager = new ReactionManager();
     }
 
     private void OnDestroy()
@@ -79,19 +70,8 @@ public class TargetManager : MonoBehaviour
             target.gameObject.name = target.TrackableName;
 
             //Add Functionality
-            print(target.name + " Target Manager");
             target.gameObject.AddComponent<ObjectCreator>();
         }
     }
 
-    //These are my methods which I have created to attempt and pass chemical manager through to all the other classes
-    public ChemicalManager GetChemicalManager()
-    {
-        return chemManager;
-    }
-
-    public ReactionManager GetReactionManager()
-    {
-        return reactionManager;
-    }
 }

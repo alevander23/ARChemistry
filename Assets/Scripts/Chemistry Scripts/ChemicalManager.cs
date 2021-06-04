@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /*[RequireComponent(typeof(Chemical))]*/
-public class ChemicalManager 
+public class ChemicalManager : MonoBehaviour
 {
     /*private Chemical chemical = null;*/
     private List<Chemical> chemicals = new List<Chemical>();
@@ -14,7 +14,7 @@ public class ChemicalManager
     public List<string> ChemicalNames { get => chemicalNames; }
     public List<string> chemicalIndexList { get => ChemicalIndexList; }
 
-    void Start()
+    void Awake()
     {
         /*chemical = GetComponent<Chemical>();*/
         TextAsset chemicalsAsset = (TextAsset)Resources.Load("Chemicals", typeof(TextAsset));
@@ -36,20 +36,20 @@ public class ChemicalManager
             }
         }
         lines.Add(bufferText);
-
+ 
         int counter = 0;
         foreach (string line in lines)
         {
-            string[] chemicalString = line.Split('#');
-
-            float oppacity = float.Parse(chemicalString[2]);
-            /*this.gameObject.AddComponent<Chemical>();*/
-            chemicals.Add(new Chemical(chemicalString[0], chemicalString[1], oppacity));
-            chemicalNames.Add(chemicalString[0]);
-            ChemicalIndexList.Add(Convert.ToString(counter));
+            string[] chemical = line.Split('#');
+            float oppacity = float.Parse(chemical[2]);
+            this.chemicals.Add(new Chemical(chemical[0], chemical[1], oppacity));
+            this.chemicalNames.Add(chemical[0]);
+            this.ChemicalIndexList.Add(Convert.ToString(counter));
             counter++;
         }
 
     }
+
+
 
 }
