@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <QCARConfig xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="qcar_config.xsd">
   <Tracking>
+    <ImageTarget name="PlaceMat4" size="0.050000 0.050000" />
+    <ImageTarget name="PlaceMat3" size="0.050000 0.050000" />
+    <ImageTarget name="PlaceMat2" size="0.050000 0.050000" />
+    <ImageTarget name="PlaceMat1" size="0.050000 0.050000" />
     <ImageTarget name="32" size="0.050000 0.050000" />
     <ImageTarget name="31" size="0.050000 0.050000" />
     <ImageTarget name="30" size="0.050000 0.050000" />

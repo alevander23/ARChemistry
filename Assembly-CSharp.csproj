@@ -64,18 +64,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Chemistry Scripts\Chemical.cs" />
-    <Compile Include="Assets\Scripts\Chemistry Scripts\ChemicalManager.cs" />
-    <Compile Include="Assets\Scripts\Chemistry Scripts\Reaction.cs" />
-    <Compile Include="Assets\Scripts\Chemistry Scripts\ReactionManager.cs" />
-    <Compile Include="Assets\Scripts\Object Scripts\BeakerManager.cs" />
-    <Compile Include="Assets\Scripts\Vuforia Scripts\Chemical Creator.cs" />
-    <Compile Include="Assets\Scripts\Vuforia Scripts\EventHandler.cs" />
-    <Compile Include="Assets\Scripts\Vuforia Scripts\Object Creator.cs" />
-    <Compile Include="Assets\Scripts\Vuforia Scripts\TargetManager.cs" />
+    <Compile Include="Assets\Scripts\Chemical.cs" />
+    <Compile Include="Assets\Scripts\ChemicalManager.cs" />
+    <Compile Include="Assets\Scripts\ContainerChemistry.cs" />
+    <Compile Include="Assets\Scripts\CreateContainer.cs" />
+    <Compile Include="Assets\Scripts\EventHandler.cs" />
+    <Compile Include="Assets\Scripts\MainFlow.cs" />
+    <Compile Include="Assets\Scripts\Reaction.cs" />
+    <Compile Include="Assets\Scripts\ReactionManager.cs" />
+    <Compile Include="Assets\Scripts\TargetFunctionality.cs" />
+    <Compile Include="Assets\Scripts\TargetManager.cs" />
     <None Include="Assets\Vuforia\Shaders\ColoredLines.shader" />
     <None Include="Assets\Vuforia\Shaders\CameraDiffuse.shader" />
-    <None Include="Assets\StreamingAssets\Vuforia\Beaker.xml" />
     <None Include="Assets\Vuforia\Shaders\VertexLitWithZ.shader" />
     <None Include="Assets\Resources\Reactions.txt" />
     <None Include="Assets\Vuforia\Shaders\VideoBackground.shader" />
@@ -84,6 +84,7 @@
     <None Include="Assets\Vuforia\Databases\Emulator\VuforiaEmulator.xml" />
     <None Include="Assets\StreamingAssets\Vuforia\VuforiaMars_Images.xml" />
     <None Include="Assets\Vuforia\Shaders\ClippingMask.shader" />
+    <None Include="Assets\StreamingAssets\Vuforia\Beaker.xml" />
     <None Include="Assets\Vuforia\Shaders\BrightTexture.shader" />
     <None Include="Assets\Vuforia\Shaders\DepthContour.shader" />
     <None Include="Assets\Resources\Chemicals.txt" />
