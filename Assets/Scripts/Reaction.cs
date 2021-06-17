@@ -2,39 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Reaction
+public class Reaction 
 {
-    #region Attributes
-    private Chemical ReactantA;
-    private Chemical ReactantB;
-    private Chemical Product;
-    #endregion
+    private readonly Chemical reactantA = null;
+    private readonly Chemical reactantB = null;
+    private readonly Chemical product = null;
 
     #region Constructor
-    public Reaction(string ReactantA, string ReactantB, string Product, List<Chemical> chemicals)
+    public Reaction(string _ReactantA, string _ReactantB, string _Product, List<Chemical> chemicals)
     {
         foreach (Chemical chemical in chemicals)
         {
-            if (chemical.ChemicalName == ReactantA)
+            if (chemical.ChemicalName == _ReactantA)
             {
-                this.ReactantA = chemical;
+                reactantA = chemical;
             }
-            else if (chemical.ChemicalName == ReactantB)
+            else if (chemical.ChemicalName == _ReactantB)
             {
-                this.ReactantB = chemical;
+                reactantB = chemical;
             }
-            else if (chemical.ChemicalName == Product)
+            else if (chemical.ChemicalName == _Product)
             {
-                this.Product = chemical;
+                product = chemical;
             }
         }
     }
     #endregion
 
     #region Getter Methods
-    public Chemical reactantA { get => ReactantA; }
-    public Chemical reactantB { get => ReactantB; }
-    public Chemical product { get => Product; }
+    public Chemical ReactantA { get => reactantA; }
+    public Chemical ReactantB { get => reactantB; }
+    public Chemical Product { get => product; }
     #endregion
 
 }

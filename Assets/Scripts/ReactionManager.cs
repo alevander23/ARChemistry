@@ -4,15 +4,12 @@ using UnityEngine;
 
 public class ReactionManager
 {
-    private List<Chemical> chemicals = null;
+    private readonly List<Reaction> reactions = new List<Reaction>();
 
-    private List<Reaction> reactions = new List<Reaction>();
+    public List<Reaction> Reactions { get => reactions; }
 
-    public List<Reaction> Reactions { get => reactions; set => reactions = value; }
-
-    public ReactionManager()
+    public ReactionManager(List<Chemical> chemicals)
     {
-        chemicals = MainFlow.ChemicalList;
         TextAsset reactionsAsset = (TextAsset)Resources.Load("Reactions", typeof(TextAsset));
         string reactionsText = reactionsAsset.text;
         List<string> lines = new List<string>();

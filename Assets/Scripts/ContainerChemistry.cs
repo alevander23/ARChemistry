@@ -11,36 +11,35 @@ public class ContainerChemistry : MonoBehaviour
 
     private GameObject SolutionObject = null;
 
+   /* private CapsuleCollider ContainerTrigger = null;*/
+
     private MeshRenderer ContainerRenderer = null;
 
     private MeshRenderer SolutionRenderer = null;
 
     private List<Chemical> ContainerChemicals = new List<Chemical>();
 
-    private ReactionManager reactionManager = null;
+    private List<Chemical> chemicalList = new List<Chemical>();
 
-    private List<Chemical> chemicalList = null;
+    private List<Reaction> reactionList = new List<Reaction>();
 
-    private List<Reaction> reactionList = null;
+    private bool isColliding = false;
 
-    
     private int Volume = 0;
 
     private void Awake()
     {
-        chemicalList = MainFlow.ChemicalList;
+        chemicalList = MainFlow.MainInstance.ChemicalList;
         reactionList = MainFlow.ReactionList;
-       /* eventHandler = this.gameObject.GetComponent<EventHandler>();*/
     }
 
-    public void SetParent(GameObject _ContainerObject)
+    public void SetParent(GameObject _ContainerObject, GameObject Trigger)
     {
         ContainerObject = _ContainerObject;
         SolutionObject = ContainerObject.transform.Find("Solution").gameObject;
         print(SolutionObject.name + "  Set Parent");
         ContainerRenderer = ContainerObject.GetComponent<MeshRenderer>();
         SolutionRenderer = SolutionObject.GetComponent<MeshRenderer>();
-
         Hide();
     }
 
@@ -49,55 +48,78 @@ public class ContainerChemistry : MonoBehaviour
         eventHandler.OnTrackingFound -= Show;
         eventHandler.OnTrackingLost -= Hide;
     }
+
     private void OnTriggerEnter(Collider other)
     {
-        print("Hello");
-        Destroy(other.gameObject);
-        if (other.tag == "Chemical")
+        print("triggered");
+        if (isColliding == false)
         {
-            foreach (Chemical chemical in chemicalList)
+            isColliding = true;
+            if (other.tag == "Chemical")
             {
-                if (chemical.ChemicalName == other.name)
+                /*ContainerTrigger.isTrigger = false;*/
+                foreach (Chemical chemical in chemicalList)
                 {
-                    AddChemical(chemical);
+                    if (chemical.ChemicalName == other.name)
+                    {
+                        AddChemical(chemical);
+                        Destroy(other.gameObject);
+                    }
                 }
+                CheckForReaction();
+                UpdateContainer();
             }
-            CheckForReaction();
-            UpdateContainer();
         }
+    }
+
+    private void Update()
+    {
+        isColliding = false;
     }
 
     private void AddChemical(Chemical chemical)
     {
         ContainerChemicals.Add(chemical);
         Volume++;
-        foreach (Chemical _chemical in ContainerChemicals)
+        foreach (Chemical chemical1 in ContainerChemicals)
         {
-            print(_chemical.ChemicalName);
+            print(chemical1.ChemicalName);
+            print(chemical1.Num);
         }
     }
     private void CheckForReaction()
     {
         print("Entering Check for Reaction");
-        foreach (Reaction reaction in reactionList)
+        if (ContainerChemicals.Count > 1)
         {
-            if (ContainerChemicals.Contains(reaction.reactantA))
+            print("proceeds");
+            foreach (Reaction reaction in reactionList)
             {
-                if (ContainerChemicals.Contains(reaction.reactantB))
+                print(reaction.ReactantA.ChemicalName);
+                print(reaction.ReactantA.Num);
+                if (ContainerChemicals.Contains(reaction.ReactantA))
                 {
-                    print("Both reactants present");
-                    this.ContainerChemicals.Remove(reaction.reactantA);
-                    this.ContainerChemicals.Remove(reaction.reactantB);
-                    this.ContainerChemicals.Add(reaction.product);
+                    if (ContainerChemicals.Contains(reaction.ReactantB))
+                    {
+                        print("Both reactants present");
+                        ContainerChemicals.Remove(reaction.ReactantA);
+                        print("removed A");
+                        ContainerChemicals.Remove(reaction.ReactantB);
+                        print("removed B");
+                        ContainerChemicals.Add(reaction.Product);
+
+                        break;
+                    }
                 }
+                
             }
         }
     }
 
     private void UpdateContainer()
     {
-        this.SolutionColor();
-        this.UpdateVolume();
+        SolutionColor();
+        UpdateVolume();
     }
 
     private void SolutionColor()
@@ -127,12 +149,12 @@ public class ContainerChemistry : MonoBehaviour
         blue /= Volume;
         alpha /= Volume;
 
-        this.SolutionRenderer.material = Resources.Load<Material>("TransparentMaterial");
+        SolutionRenderer.material = Resources.Load<Material>("TransparentMaterial");
         Color solutionColor = new Color(red, green, blue, alpha);
-        this.SolutionRenderer.material.EnableKeyword("_EMISSION");
-        this.SolutionRenderer.material.SetColor("_EmissionColor", solutionColor);
-        this.SolutionRenderer.material.renderQueue = 2450;
-        this.SolutionRenderer.material.color = solutionColor;
+        SolutionRenderer.material.EnableKeyword("_EMISSION");
+        SolutionRenderer.material.SetColor("_EmissionColor", solutionColor);
+        SolutionRenderer.material.renderQueue = 2450;
+        SolutionRenderer.material.color = solutionColor;
         print("Alpha value : " + alpha);
     }
 
@@ -143,8 +165,8 @@ public class ContainerChemistry : MonoBehaviour
         if (ContainerObject.name == "Beaker")
         {
             //this still needs to be fiddled with
-            this.SolutionObject.transform.localScale = new Vector3(0.5624999f, 0.1f * Volume, 0.5624999f);
-            this.SolutionObject.transform.localPosition = new Vector3(0f, (0.05f + (Volume * 0.1f)), 0f);
+            SolutionObject.transform.localScale = new Vector3(0.5624999f, 0.1f * Volume, 0.5624999f);
+            SolutionObject.transform.localPosition = new Vector3(0f, (0.05f + (Volume * 0.1f)), 0f);
         }
         else
         {
@@ -155,7 +177,7 @@ public class ContainerChemistry : MonoBehaviour
 
     public void PassEventHandler(EventHandler _eventHandler)
     {
-        this.eventHandler = _eventHandler;
+        eventHandler = _eventHandler;
         eventHandler.OnTrackingFound += Show;
         eventHandler.OnTrackingLost += Hide;
     }

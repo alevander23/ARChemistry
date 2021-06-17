@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class CreateContainer : MonoBehaviour
+public class CreateContainer : TargetFunctionality
 {
     private EventHandler eventHandler = null;
     private GameObject Container = null;
@@ -12,12 +12,12 @@ public class CreateContainer : MonoBehaviour
     private void Awake()
     {
         //Creating Container
-        if (MainFlow.SpawnQueue == "Beaker")
+        if (SpawnQueue == "Beaker")
         {
             ContainerType = "Beaker";
             CreateBeaker();
         }
-        else if (MainFlow.SpawnQueue == "TestTube")
+        else if (SpawnQueue == "TestTube")
         {
             ContainerType = "TestTube";
             CreateTestTube();
@@ -76,7 +76,7 @@ public class CreateContainer : MonoBehaviour
         print(this.gameObject.name);
         //Creating clone of TestTubeObject
         Container = Instantiate(GameObject.Find("TestTubeObject"));
-        MainFlow.TestTube = Container;
+        MainTestTube = Container;
     }
 
     private void AssignFunctionality()
@@ -87,7 +87,7 @@ public class CreateContainer : MonoBehaviour
         Trigger.AddComponent<ContainerChemistry>();
         ContainerChemistry containerChemistry = Trigger.GetComponent<ContainerChemistry>();
         containerChemistry.PassEventHandler(eventHandler);
-        containerChemistry.SetParent(Container);
+        containerChemistry.SetParent(Container, Trigger);
 
     }
 

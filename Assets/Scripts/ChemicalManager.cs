@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class ChemicalManager
 {
-    private List<Chemical> chemicals = new List<Chemical>();
-    private List<string> chemicalNames = new List<string>();
+    private readonly List<Chemical> chemicals = new List<Chemical>();
+    private readonly List<string> chemicalNames = new List<string>();
     public List<Chemical> Chemicals { get => chemicals; }
     /*public List<string> ChemicalNames { get => chemicalNames; }*/
 
@@ -36,8 +36,8 @@ public class ChemicalManager
         {
             string[] chemical = line.Split('#');
             float oppacity = float.Parse(chemical[2]);
-            this.chemicals.Add(new Chemical(chemical[0], chemical[1], oppacity));
-            this.chemicalNames.Add(chemical[0]);
+            chemicals.Add(new Chemical(chemical[0], chemical[1], oppacity));
+            chemicalNames.Add(chemical[0]);
         }
 
     }
