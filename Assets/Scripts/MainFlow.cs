@@ -4,52 +4,39 @@ using UnityEngine;
 
 public class MainFlow : MonoBehaviour
 {
+    #region Static Attributes
     //These static variables allow me to have certain attributes which are easily accessible.
-    private string spawnQueue = "";
+    private static string spawnQueue = "TestTube";
 
-    private GameObject maintestTube = null;
+    private static List<GameObject> testTubes;
 
-    private ChemicalManager chemicalManager = null;
+    private static List<GameObject> beakers;
 
-    private ReactionManager reactionManager = null;
+    private static ChemicalManager chemicalManager;
 
-    private List<Chemical> chemicalList = null;
+    private static ReactionManager reactionManager;
+    #endregion
 
-    private List<Reaction> reactionList = null;
+    #region Static Getter/Setter Methods
+    /*  private static Dictionary<GameObject, EventHandler> instanceEventHandlers = new Dictionary<GameObject, EventHandler>();
+  */
+    protected static string SpawnQueue { get => spawnQueue; set => spawnQueue = value; }
+    protected static List<GameObject> TestTubes { get => testTubes; set => testTubes = value; }
+    protected static List<GameObject> Beakers { get => beakers; set => beakers = value; }
+    protected static ChemicalManager ChemicalManager { get => chemicalManager; }
+    protected static ReactionManager ReactionManager { get => reactionManager; }
+    /*protected static Dictionary<GameObject, EventHandler> InstanceEventHandlers { get => instanceEventHandlers; set => instanceEventHandlers = value; }
+*/
+    #endregion
 
-    private GameObject chemicals = null; 
-
-    public string SpawnQueue { get => spawnQueue; set => spawnQueue = value; }
-    public List<Chemical> ChemicalList { get => chemicalList; }
-    public List<Reaction> ReactionList { get => reactionList; }
-    public GameObject Chemicals { get => chemicals; }
-    public ChemicalManager ChemicalManager { get => chemicalManager; }
-    public GameObject MainTestTube { get => maintestTube; set => maintestTube = value; }
-
-    public MainFlow()
+    #region MonoBehaviours
+    private void Awake()
     {
-        print("is called");
-        chemicals = new GameObject();
-        chemicals.transform.parent = transform;
+        testTubes = new List<GameObject>();
+        beakers = new List<GameObject>();
         chemicalManager = new ChemicalManager();
-        chemicalList = chemicalManager.Chemicals;
-        reactionManager = new ReactionManager(chemicalList);
-        reactionList = reactionManager.Reactions;
-
-
-        foreach (Reaction reaction in reactionList)
-        {
-            print(reaction.ReactantA.ChemicalName + " + " + reaction.ReactantB.ChemicalName + " = " + reaction.Product.ChemicalName);
-        }
-    }
-    public void Main()
-    {
-        //Load targets and add Functionality
+        reactionManager = new ReactionManager(ChemicalManager.Chemicals);
         gameObject.AddComponent<TargetManager>();
-
     }
-
-    public MainFlow MainInstance { get => this; }
-
-
+    #endregion
 }

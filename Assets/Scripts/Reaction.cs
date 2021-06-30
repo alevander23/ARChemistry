@@ -4,28 +4,29 @@ using UnityEngine;
 
 public class Reaction 
 {
-    private readonly Chemical reactantA = null;
-    private readonly Chemical reactantB = null;
-    private readonly Chemical product = null;
+    private Chemical reactantA = null;
+    private Chemical reactantB = null;
+    private Chemical product = null;
 
     #region Constructor
     public Reaction(string _ReactantA, string _ReactantB, string _Product, List<Chemical> chemicals)
     {
         foreach (Chemical chemical in chemicals)
         {
-            if (chemical.ChemicalName == _ReactantA)
+            if (chemical.ChemicalName.Equals(_ReactantA))
             {
                 reactantA = chemical;
             }
-            else if (chemical.ChemicalName == _ReactantB)
+            else if (chemical.ChemicalName.Equals(_ReactantB))
             {
                 reactantB = chemical;
             }
-            else if (chemical.ChemicalName == _Product)
+            else if (chemical.ChemicalName.Equals(_Product))
             {
                 product = chemical;
             }
         }
+
     }
     #endregion
 

@@ -4,7 +4,7 @@ using UnityEngine;
 using Vuforia;
 using System.Linq;
 
-public class TargetManager : MainFlow
+public class TargetManager : MonoBehaviour
 {
     public string mDatabaseName = "Beaker";
 

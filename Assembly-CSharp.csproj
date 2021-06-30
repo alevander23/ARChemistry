@@ -66,8 +66,8 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Chemical.cs" />
     <Compile Include="Assets\Scripts\ChemicalManager.cs" />
-    <Compile Include="Assets\Scripts\ContainerChemistry.cs" />
-    <Compile Include="Assets\Scripts\CreateContainer.cs" />
+    <Compile Include="Assets\Scripts\ChemistryLogic.cs" />
+    <Compile Include="Assets\Scripts\ChemistryManager.cs" />
     <Compile Include="Assets\Scripts\EventHandler.cs" />
     <Compile Include="Assets\Scripts\MainFlow.cs" />
     <Compile Include="Assets\Scripts\Reaction.cs" />

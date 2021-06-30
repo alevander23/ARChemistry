@@ -5,7 +5,6 @@ using UnityEngine;
 public class ReactionManager
 {
     private readonly List<Reaction> reactions = new List<Reaction>();
-
     public List<Reaction> Reactions { get => reactions; }
 
     public ReactionManager(List<Chemical> chemicals)
@@ -29,7 +28,7 @@ public class ReactionManager
             }
         }
         lines.Add(bufferText);
-
+        
         foreach (string line in lines)
         {
             string[] reaction = line.Split('#');

@@ -56,7 +56,7 @@ public class EventHandler : MonoBehaviour, ITrackableEventHandler
                 if (OnTrackingFound != null)
                     OnTrackingFound();
 
-                print("Tracking Found");
+                /*print("Tracking Found");*/
 
                 return;
             }
@@ -70,7 +70,7 @@ public class EventHandler : MonoBehaviour, ITrackableEventHandler
                 if (OnTrackingLost != null)
                     OnTrackingLost();
 
-                print("Tracking Lost");
+                /*print("Tracking Lost");*/
 
                 return;
             }
