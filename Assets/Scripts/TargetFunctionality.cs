@@ -7,13 +7,6 @@ public class TargetFunctionality : MainFlow
 {
     private EventHandler eventHandler = null;
 
- /*   protected EventHandler InstanceEventHandler { get => eventHandler; }
-    protected float Instance_identifier { get => instance_identifier; }
-
-    private int instance_identifier = 0;*/
-/*
-    private readonly System.Random rndom = new System.Random();*/
-
     private void Awake()
     { 
        /* instance_identifier = rndom.Next();*/
@@ -40,7 +33,7 @@ public class TargetFunctionality : MainFlow
             int index = System.Convert.ToInt32(this.gameObject.name);
 
             //Renaming object
-            this.gameObject.name = ChemicalManager.GetNameOfChemicalIndex(index);
+            this.gameObject.name = ChemicalManager.Chemicals[index].ChemicalName;
 
             //OnTrackingFound Spawn Pill
             eventHandler.OnTrackingFound += SpawnPill;
@@ -82,7 +75,8 @@ public class TargetFunctionality : MainFlow
 
         if (SpawnQueue == "Beaker" || SpawnQueue == "TestTube")
         {
-            this.gameObject.AddComponent<ChemistryManager>();
+            gameObject.AddComponent<ChemistryManager>();
+            /*gameObject.AddComponent<Solution>();*/
             eventHandler.OnTrackingFound -= SpawnContainer;
         }
         else
@@ -97,7 +91,7 @@ public class TargetFunctionality : MainFlow
 
         if (TestTubes.Count > 0 || Beakers.Count > 0)
         {
-            GameObject pill = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+            GameObject pill = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 
             if (TestTubes.Count > 0)
             {
@@ -110,7 +104,7 @@ public class TargetFunctionality : MainFlow
 
             pill.transform.localPosition = new Vector3(0f, 0f, 0f);
 
-            pill.transform.localScale = new Vector3(0.0001f, 0.00005f, 0.0001f);
+            pill.transform.localScale = new Vector3(0.0001f, 0.0001f, 0.0001f);
 
             pill.transform.localEulerAngles = new Vector3(0f, 0f, 0f);
 
@@ -118,15 +112,21 @@ public class TargetFunctionality : MainFlow
 
             pill.AddComponent<Rigidbody>();
 
-            pill.AddComponent<CapsuleCollider>();
+            /* pill.AddComponent<CapsuleCollider>();*/
 
-            pill.GetComponent<CapsuleCollider>();
+            pill.GetComponent<SphereCollider>();
 
-            pill.GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;
+        /*    pill.GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.ContinuousSpeculative;*/
 
-            pill.name = this.gameObject.name;
+           /* pill.GetComponent<Rigidbody>().isKinematic = true;*/
 
-            pill.tag = "Chemical";
+            /*print(this.gameObject.name + " GAMEOBJECT");*/
+
+            pill.tag = this.gameObject.name;
+
+            pill.name = "6.5";
+
+           /* pill.GetComponent<Rigidbody>().isKinematic = false;*/
 
             
         }

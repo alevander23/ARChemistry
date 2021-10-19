@@ -70,8 +70,10 @@
     <Compile Include="Assets\Scripts\ChemistryManager.cs" />
     <Compile Include="Assets\Scripts\EventHandler.cs" />
     <Compile Include="Assets\Scripts\MainFlow.cs" />
+    <Compile Include="Assets\Scripts\MethodLibrary.cs" />
     <Compile Include="Assets\Scripts\Reaction.cs" />
     <Compile Include="Assets\Scripts\ReactionManager.cs" />
+    <Compile Include="Assets\Scripts\Solution.cs" />
     <Compile Include="Assets\Scripts\TargetFunctionality.cs" />
     <Compile Include="Assets\Scripts\TargetManager.cs" />
     <None Include="Assets\Vuforia\Shaders\ColoredLines.shader" />

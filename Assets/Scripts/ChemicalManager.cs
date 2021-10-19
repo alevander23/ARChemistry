@@ -6,7 +6,6 @@ using UnityEngine;
 public class ChemicalManager
 {
     private readonly List<Chemical> chemicals = new List<Chemical>();
-    private readonly List<string> chemicalNames = new List<string>();
     public List<Chemical> Chemicals { get => chemicals; }
     /*public List<string> ChemicalNames { get => chemicalNames; }*/
 
@@ -37,16 +36,9 @@ public class ChemicalManager
             string[] chemical = line.Split('#');
             float oppacity = float.Parse(chemical[2]);
             chemicals.Add(new Chemical(chemical[0], chemical[1], oppacity));
-            chemicalNames.Add(chemical[0]);
         }
 
     }
-
-    public string GetNameOfChemicalIndex(int Index)
-    {
-        return chemicalNames[Index];
-    }
-
 
 
 }

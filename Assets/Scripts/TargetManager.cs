@@ -10,6 +10,8 @@ public class TargetManager : MonoBehaviour
 
     private List<TrackableBehaviour> mAllTargets = new List<TrackableBehaviour>();
 
+    private bool flag = true;
+
     private void Awake()
     {
         VuforiaARController.Instance.RegisterVuforiaStartedCallback(OnVuforiaStarted);
@@ -31,6 +33,9 @@ public class TargetManager : MonoBehaviour
 
         //Sets up the Attributes and functionality of the targets.
         SetupTargets(mAllTargets);
+
+
+
     }
 
     private void LoadDatabase(string setName)
@@ -61,16 +66,23 @@ public class TargetManager : MonoBehaviour
 
     private void SetupTargets(List<TrackableBehaviour> allTargets)
     {
-        foreach (TrackableBehaviour target in allTargets)
+        print(flag);
+        if (flag)
         {
-            target.gameObject.transform.parent = transform;
+            foreach (TrackableBehaviour target in allTargets)
+            {
+                target.gameObject.transform.parent = transform;
 
-            //Rename
-            target.gameObject.name = target.TrackableName;
+                //Rename
+                target.gameObject.name = target.TrackableName;
 
-            //Add Functionality
-            target.gameObject.AddComponent<TargetFunctionality>();
-            
+                //Add Functionality
+                target.gameObject.AddComponent<TargetFunctionality>();
+
+                target.gameObject.layer = 2;
+            }
+
+            flag = false;
         }
     }
 

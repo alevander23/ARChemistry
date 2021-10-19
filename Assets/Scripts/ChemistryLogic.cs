@@ -5,41 +5,75 @@ using UnityEngine;
 public class ChemistryLogic : MainFlow
 {
     #region Chemistry Methods
-    protected List<Chemical> CheckForReaction(List<Chemical> ContainerChemicals)
+    protected Dictionary<Chemical, float> CheckForReaction(Dictionary<Chemical, float> ContainerChemicals)
     {
-        print("Entering Check for Reaction");
         if (ContainerChemicals.Count > 1)
         {
             /*foreach(Reaction reaction1 in ReactionManager.Reactions)
             {
                 print(reaction1.ReactantA.ChemicalName + " + " + reaction1.ReactantB.ChemicalName + " = " + reaction1.Product.ChemicalName);
             }*/
-            print(ReactionManager.Reactions.Count);
-            print("proceeds");
             foreach (Reaction reaction in ReactionManager.Reactions)
             {
-                if (ContainerChemicals.Contains(reaction.ReactantA))
+                if (ContainerChemicals.ContainsKey(reaction.ReactantA))
                 {
-                    if (ContainerChemicals.Contains(reaction.ReactantB))
+                    if (ContainerChemicals.ContainsKey(reaction.ReactantB))
                     {
-                        print("Both reactants present");
-                        ContainerChemicals.Remove(reaction.ReactantA);
-                        print("removed A");
-                        ContainerChemicals.Remove(reaction.ReactantB);
-                        print("removed B");
-                        ContainerChemicals.Add(reaction.Product);
-                        print("added C");
-                        print(ReactionManager.Reactions.Count + " after removal count");
+                        //Adjust volume of each chemical, and add reactant with appropriate volume
+
+                        //If reactant A is more plentiful than reactant B, remove all reactant B. Substract reactant B from reaction A volume.
+                        if (ContainerChemicals[reaction.ReactantA] > ContainerChemicals[reaction.ReactantB])
+                        {
+                            ContainerChemicals[reaction.ReactantA] -= ContainerChemicals[reaction.ReactantB];
+                            if (ContainerChemicals.ContainsKey(reaction.Product))
+                            {
+                                ContainerChemicals[reaction.Product] += 2 * ContainerChemicals[reaction.ReactantB];
+                            }
+                            else
+                            {
+                                ContainerChemicals.Add(reaction.Product, 2 * ContainerChemicals[reaction.ReactantB]);
+                            }
+                            ContainerChemicals.Remove(reaction.ReactantB);
+                        }
+                        //If reactant B and A volume is equal. Then remove all of both reactants Volume / remove from dictionary
+                        else if (ContainerChemicals[reaction.ReactantA] == ContainerChemicals[reaction.ReactantB])
+                        {
+                            if (ContainerChemicals.ContainsKey(reaction.Product))
+                            {
+                                ContainerChemicals[reaction.Product] += 2 * ContainerChemicals[reaction.ReactantB];
+                            }
+                            else
+                            {
+                                ContainerChemicals.Add(reaction.Product, 2 * ContainerChemicals[reaction.ReactantB]);
+                            }
+                            ContainerChemicals.Remove(reaction.ReactantA);
+                            ContainerChemicals.Remove(reaction.ReactantB);
+
+                        }
+                        // If reactant B is more plentiful do opposite of first if statement.
+                        else
+                        {
+                            if (ContainerChemicals.ContainsKey(reaction.Product))
+                            {
+                                ContainerChemicals[reaction.Product] += 2 * ContainerChemicals[reaction.ReactantA];
+                            }
+                            else
+                            {
+                                ContainerChemicals.Add(reaction.Product, 2 * ContainerChemicals[reaction.ReactantA]);
+                            }
+                            ContainerChemicals[reaction.ReactantB] -= ContainerChemicals[reaction.ReactantA];
+                            ContainerChemicals.Remove(reaction.ReactantA);
+                        }
                     }
                 }
             }
 
-            print("Container Chemicals:");
+            /*print("Container Chemicals:");
 
-            foreach (Chemical chemical in ContainerChemicals)
+            foreach (Chemical chemical in ContainerChemicals.Keys)
             {
                 print(chemical.ChemicalName);
-            }
+            }*/
 
             return ContainerChemicals;
         }
@@ -49,31 +83,40 @@ public class ChemistryLogic : MainFlow
         }
     }
 
-    protected void SolutionColor(List<Chemical> ContainerChemicals, MeshRenderer SolutionRenderer)
+    /*protected void SolutionColor(Dictionary<Chemical, float> ContainerChemicals, MeshRenderer SolutionRenderer)
     {
         List<Color> colors = new List<Color>();
         SolutionRenderer.material = Resources.Load<Material>("TransparentMaterial");
         SolutionRenderer.material.EnableKeyword("_EMISSION");
+
         //Effective Volume for mixing Oppacity
-        int Volume = ContainerChemicals.Count;
+        float Volume = ContainerChemicals.Count;
 
         //Effective Volume for mixing Color
-        int ColorVolume = 0;
+        float ColorVolume = 0;
 
         //Counter for Opaque contents
-        int OpaqueCounter = 0;
+        float OpaqueCounter = 0;
+
         //Counter for Transparent contents
-        int TransparentCounter = 0;
+        float TransparentCounter = 0;
 
         float red = 0f;
         float green = 0f;
         float blue = 0f;
         float alpha = 0f;
         
-        foreach (Chemical chemical in ContainerChemicals)
+        foreach (Chemical chemical in ContainerChemicals.Keys)
         {
             colors.Add(chemical.ChemicalColor);
-            print(chemical.ChemicalName);
+            if (chemical.ChemicalColor.a == 1.0f)
+            {
+                OpaqueCounter += ContainerChemicals[chemical];
+            }
+            else
+            {
+                TransparentCounter += ContainerChemicals[chemical];
+            }
         }
 
         foreach (Color color in colors)
@@ -86,22 +129,13 @@ public class ChemistryLogic : MainFlow
             green += color.g;
             blue += color.b;
             alpha += color.a;
-            if (color.a == 1.0f)
-            {
-                OpaqueCounter++;
-            }
-            else
-            {
-                TransparentCounter++;
-            }
         }
 
-        print(alpha);
         Color solutionColor = new Color(red, blue, green, alpha);
 
         if (solutionColor != Color.clear)
         {
-            print("entering color");
+            *//*print("entering color");*//*
             red /= ColorVolume;
             green /= ColorVolume;
             blue /= ColorVolume;
@@ -121,18 +155,19 @@ public class ChemistryLogic : MainFlow
         }
         else
         {
+            print("trans colorless");
             //Transparent Colorless Solutions
-            solutionColor = new Color(1f, 1f, 1f, 0f);
+            solutionColor = new Color(1f, 1f, 1f, 0.01f);
             SolutionRenderer.material.SetColor("_EmissionColor", new Vector4(1.0f, 1.0f, 1.0f, 0f) * 0.25f);
         }
 
         SolutionRenderer.material.renderQueue = 2450;
         SolutionRenderer.material.color = solutionColor;
         
-    }
+    }*/
 
 
-    protected void UpdateVolume(GameObject ContainerObject, GameObject SolutionObject, int Volume)
+    /*protected void UpdateVolume(GameObject ContainerObject, GameObject SolutionObject, float Volume)
     {
         print("update Volume");
         //0.05 starting height of volume - 0.1 is good scale for one unit 
@@ -149,7 +184,7 @@ public class ChemistryLogic : MainFlow
             SolutionObject.transform.localPosition = new Vector3(0f, 0f, (-0.00068f + (0.0001f * Volume)));
         }
 
-        /*return SolutionObject;*/
-    }
+        *//*return SolutionObject;*//*
+    }*/
     #endregion
 }

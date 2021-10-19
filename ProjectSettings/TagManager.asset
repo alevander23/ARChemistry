@@ -7,6 +7,38 @@ TagManager:
   - Chemical
   - Beaker
   - TestTube
+  - Ag+
+  - AgOH
+  - Cu(OH)2
+  - Fe(OH)2
+  - Mg(OH)2
+  - Ba(OH)2
+  - Zn(OH)2
+  - Al(OH)3
+  - Pb(OH)2
+  - MgSO4
+  - NaOH
+  - BaSO4
+  - H2SO4
+  - '[Zn(OH)4]2-'
+  - PbSO4
+  - '[Al(OH)4]-'
+  - '[Pb(OH)4]2-'
+  - '[Zn(NH3)4]2+'
+  - '[Ag(NH3)2]+'
+  - '[Cu(NH3)4]2+'
+  - '[FeSCN]2+'
+  - KSCN
+  - NH3
+  - Al3+
+  - Ba2+
+  - Mg2+
+  - Pb2+
+  - Na+
+  - Fe2+
+  - Fe3+
+  - Cu2+
+  - Zn2+
   layers:
   - Default
   - TransparentFX

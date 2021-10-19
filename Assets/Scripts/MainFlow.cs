@@ -15,6 +15,8 @@ public class MainFlow : MonoBehaviour
     private static ChemicalManager chemicalManager;
 
     private static ReactionManager reactionManager;
+
+    private static bool flag2 = true;
     #endregion
 
     #region Static Getter/Setter Methods
@@ -30,13 +32,17 @@ public class MainFlow : MonoBehaviour
     #endregion
 
     #region MonoBehaviours
-    private void Awake()
+    private void Start()
     {
-        testTubes = new List<GameObject>();
-        beakers = new List<GameObject>();
-        chemicalManager = new ChemicalManager();
-        reactionManager = new ReactionManager(ChemicalManager.Chemicals);
-        gameObject.AddComponent<TargetManager>();
+        if (flag2)
+        {
+            flag2 = false;
+            testTubes = new List<GameObject>();
+            beakers = new List<GameObject>();
+            chemicalManager = new ChemicalManager();
+            reactionManager = new ReactionManager(ChemicalManager.Chemicals);
+            gameObject.AddComponent<TargetManager>();
+        }
     }
     #endregion
 }
