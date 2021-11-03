@@ -20,12 +20,13 @@ public class ChemistryManager : ChemistryLogic
     private bool tipFlag = false;
     private bool containerFlag = false;
 
-    public float Volume1 { get => Volume; }
-    public Dictionary<Chemical, float> ContainerChemicals1 { get => ContainerChemicals; }
+    public float Volume1 { get => Volume; set => Volume = value; }
+    public Dictionary<Chemical, float> ContainerChemicals1 { get => ContainerChemicals; set => ContainerChemicals = value; }
     public GameObject ContainerObject { get => containerObject; }
 
     public bool ContainerFlag { get => containerFlag; }
     public MeshRenderer SolutionRenderer1 { set => SolutionRenderer = value; }
+    public BoxCollider Trigger1 { get => Trigger; }
 
     #endregion
 
@@ -94,10 +95,19 @@ public class ChemistryManager : ChemistryLogic
         gameObject.AddComponent<BoxCollider>();
         Trigger = gameObject.GetComponent<BoxCollider>();
 
-        //Direction x = 0, y = 1, z = 2
-        Trigger.center = new Vector3(0f, 0.1f, -0.45f);
-        Trigger.size = Vector3.one * 0.1f;
-        Trigger.isTrigger = true;
+        
+        if (containerObject.name == "Beaker")
+        {
+            Trigger.center = new Vector3(0f, 0.07f, 0f);
+            Trigger.size = new Vector3(0.4f, 0.1f, 0.4f);
+            Trigger.isTrigger = true;
+        }
+        else
+        {
+            Trigger.center = new Vector3(0f, 0.1f, -0.45f);
+            Trigger.size = Vector3.one * 0.1f;
+            Trigger.isTrigger = true;
+        }
         /*containerObject.AddComponent<Rigidbody>();
 
         containerObject.GetComponent<Rigidbody>().isKinematic = true;
@@ -110,11 +120,11 @@ public class ChemistryManager : ChemistryLogic
     {
         containerObject.transform.localPosition = new Vector3(0f, 0.54f, 0f);
         containerObject.transform.localEulerAngles = new Vector3(-90f, 0f, 0f);
-        if (SpawnQueue == "Beaker")
+        if (containerObject.name == "Beaker")
         {
             //SEE WHETHER I CAN FIX THIS ISSUE OF 1500f for scale - ITS UGLY 
-            containerObject.transform.localScale = new Vector3(1500f, 1500f, 1500f);
-            containerObject.transform.localPosition = new Vector3(0f, 0.54f, 0f);
+            containerObject.transform.localScale = new Vector3(900f, 900f, 900f);
+            containerObject.transform.localPosition = new Vector3(0f, 0.34f, 0f);
             containerObject.transform.localEulerAngles = new Vector3(-90f, 0f, 0f);
             /*//SOLUTION OBJECT WILL BE DIFFERENT FROM NOW ON
             solutionObject = containerObject.transform.Find("Solution").gameObject;
@@ -156,10 +166,10 @@ public class ChemistryManager : ChemistryLogic
     
     #endregion
 
-    #region Trigger Events
+    #region Trigger Event
 
     //proBLEM lies here
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         //Insures that a single collision will only result in a single execution of method
         if (isColliding == false)
@@ -167,51 +177,81 @@ public class ChemistryManager : ChemistryLogic
             isColliding = true;
             /*            if (other.tag == "Chemical")
                         {*/
-            foreach (Chemical chemical in ChemicalManager.Chemicals)
+            if (other.tag == "Chemical")
             {
-                if (chemical.ChemicalName == other.tag)
+                string[] arr = other.name.Split('#');
+                
+                for (int i = 0; i < arr.Length; i++)
                 {
-                    if (ContainerChemicals.ContainsKey(chemical))
+                    string[] chemical_string = arr[i].Split('&');
+                    Chemical chemical = ChemicalManager.Chemicals[0];
+                    foreach (Chemical chem in ChemicalManager.Chemicals)
                     {
-                        ContainerChemicals[chemical] += float.Parse(other.name);
-                    }
-                    else
-                    {
-                        ContainerChemicals.Add(chemical, float.Parse(other.name));
-                    }
-                    print(float.Parse(other.name));
-                    Volume += float.Parse(other.name);
-                    print(Volume + " Volume ChemManager");
-                    /*    if (SolutionRenderer.enabled == false)
+                        if (chem.ChemicalName == chemical_string[0])
                         {
-                            SolutionRenderer.enabled = true;
-                        }*/
-
-                    Destroy(other.gameObject);
-
-                    
-
+                            chemical = chem;
+                        }
+                    }
+                    print(chemical_string[1]);
+                    addToChemicals(other.gameObject, chemical, float.Parse(chemical_string[1]));
                 }
+
+                CreateSolution();
             }
 
-
-            if (null == solutionObject)
+            else
             {
-                containerObject.AddComponent<Solution>();
-                solutionObject = new GameObject();
+                foreach (Chemical chemical in ChemicalManager.Chemicals)
+                {
+                    if (chemical.ChemicalName == other.tag)
+                    {
+                        addToChemicals(other.gameObject, chemical, float.Parse(other.name));
+                    }
+                }
+
+
+                CreateSolution();
+
+                /*SolutionColor(ContainerChemicals, gameObject.GetComponent<Solution>().GetComponent<MeshRenderer>());*/
+                /*UpdateVolume(containerObject, solutionObject, Volume);*/
+                /*            }*/
             }
-
-
-
-            ContainerChemicals = CheckForReaction(ContainerChemicals);
-            /*SolutionColor(ContainerChemicals, gameObject.GetComponent<Solution>().GetComponent<MeshRenderer>());*/
-            /*UpdateVolume(containerObject, solutionObject, Volume);*/
-            /*            }*/
         }
     }
 
+    private void addToChemicals(GameObject gameobject, Chemical chemical, float volume)
+    {
+        if (ContainerChemicals.ContainsKey(chemical))
+        {
+            ContainerChemicals[chemical] += volume;
+        }
+        else
+        {
+            ContainerChemicals.Add(chemical, volume);
+        }
 
+        /*print(float.Parse(other.name));*/
+        Volume += volume;
+        /*print(Volume + " Volume ChemManager");*/
 
+        /*    if (SolutionRenderer.enabled == false)
+            {
+                SolutionRenderer.enabled = true;
+            }*/
+
+        Destroy(gameobject);
+    }
+
+    private void CreateSolution()
+    {
+        if (null == solutionObject)
+        {
+            containerObject.AddComponent<Solution>();
+            solutionObject = new GameObject();
+        }
+
+        ContainerChemicals = CheckForReaction(ContainerChemicals);
+    }
     //COULD TURN THIS INTO A CO ROUTINE TO HELP WITH PERFORMANCE
     private void Update()
     {
@@ -257,6 +297,7 @@ public class ChemistryManager : ChemistryLogic
 
     private void Hide()
     {
+        print("hide");
         if (containerObject.name == "Beaker")
         {
             Beakers.Remove(containerObject);

@@ -84,7 +84,4 @@ public static class MethodLibrary
             objects[i].transform.position = locations[i];
         }
     }
-
-
-
 }

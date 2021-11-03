@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using UnityEngine;
 
@@ -11,6 +13,7 @@ public class Solution : ChemistryLogic
     private int[] triangles;
     private MeshFilter mf;
     private MeshRenderer mr;
+    private Color solution_color;
 
     //Dynamic Attributes
     private float height;
@@ -22,6 +25,7 @@ public class Solution : ChemistryLogic
 
     //GameObjects
     private GameObject SolutionObject;
+    private GameObject containerObject;
     private GameObject LevelingPlane;
     private GameObject LevelingPositioner;
     private GameObject LowestPlane;
@@ -30,7 +34,8 @@ public class Solution : ChemistryLogic
 
     //Flags
     private bool critFlag;
-    private bool deleteFlag;
+    private bool tiltFlag;
+    /*private bool deleteFlag;*/
 
     //ChemistryManager
     private ChemistryManager chemManager;
@@ -44,17 +49,21 @@ public class Solution : ChemistryLogic
     // Start is called before the first frame update
     private void Start()
     {
-
+        tiltFlag = false;
         GameObject parent = gameObject.transform.parent.gameObject;
+
+        Physics.IgnoreLayerCollision(0, 8);
 
         chemManager = parent.GetComponent<ChemistryManager>();
 
         ContainerChemicals = chemManager.ContainerChemicals1;
 
+        containerObject = chemManager.ContainerObject;
+
         print(gameObject.name);
 
         critFlag = false;
-        deleteFlag = false;
+        /*deleteFlag = false;*/
 
         SolutionObject = MethodLibrary.CreateGameObject(1, 0.01f, default, false, gameObject.transform, "Solution")[0];
         LevelingPlane = MethodLibrary.CreateGameObject(1, 2, PrimitiveType.Plane, true, SolutionObject.transform, "Leveling Plane")[0];
@@ -79,11 +88,21 @@ public class Solution : ChemistryLogic
 
         SolutionObject.transform.parent = gameObject.transform;
 
-        if (SpawnQueue == "Beaker")
+        /*LevelingPlane.AddComponent<Rigidbody>();
+        LevelingPlane.GetComponent<Rigidbody>().useGravity = false;
+        LevelingPlane.GetComponent<Rigidbody>().isKinematic = true;
+        
+        LowestPlane.AddComponent<Rigidbody>();
+        LowestPlane.GetComponent<Rigidbody>().useGravity = false;
+        LowestPlane.GetComponent<Rigidbody>().isKinematic = true;*/
+
+        if (containerObject.name == "Beaker")
         {
-            SolutionObject.transform.localScale = new Vector3(1500f, 1500f, 1500f);
-            SolutionObject.transform.localPosition = new Vector3(0f, 0f, 0f);
-            SolutionObject.transform.localEulerAngles = new Vector3(0f, 0f, 0f);
+            SolutionObject.transform.localScale = new Vector3(0.00017f, 0.00017f, 0.00017f);
+            SolutionObject.transform.localPosition = new Vector3(-0.00009f, 0.00021f, -0.00035f);
+            SolutionObject.transform.localEulerAngles = new Vector3(90f, 0f, 0f);
+            LowestPlane.GetComponent<MeshCollider>().enabled = false;
+            LevelingPlane.GetComponent<MeshCollider>().enabled = false;
         }
         else
         {
@@ -109,9 +128,11 @@ public class Solution : ChemistryLogic
             verticeObjects2[i].GetComponent<SphereCollider>().enabled = false;
         }*/
 
-        print(getHeight());
         StartCoroutine(MyEvent());
-        /*StartCoroutine(MyEvent2());*/
+        if (containerObject.name != "Beaker")
+        {
+            StartCoroutine(MyEvent2());
+        }
     }
 
 
@@ -187,6 +208,21 @@ public class Solution : ChemistryLogic
     {
         int index = MethodLibrary.FindObjectOfLowestHeight(verticeObjects, 0);
 
+        if (index > 7)
+        {
+            tiltFlag = true;
+            chemManager.Trigger1.enabled = false;
+            LowestPlane.GetComponent<MeshCollider>().enabled = false;
+            LevelingPlane.GetComponent<MeshCollider>().enabled = false;
+        }
+        else
+        {
+            tiltFlag = false;
+            chemManager.Trigger1.enabled = true;
+            LowestPlane.GetComponent<MeshCollider>().enabled = true;
+            LevelingPlane.GetComponent<MeshCollider>().enabled = true;
+        }
+
         LowestPlane.transform.position = verticeObjects[index].transform.position;
     }
 
@@ -213,33 +249,16 @@ public class Solution : ChemistryLogic
 
             Vector3 direction = heading.normalized;
 
-            float distance = 0;
 
             if (Physics.Raycast(startPos, direction, out hitInfo, 100f))
             {
                 if (hitInfo.collider)
                 {
                     Vector3 localPoint = SolutionObject.transform.InverseTransformPoint(hitInfo.point);
-                    /*print(distance);
-                    print(controlHeight);
-                    print(test);*/
-
-                    /*print(heightPH);
                     
-
-                    float new_distance = distance / controlHeight;
-
-                    print(new_distance);
-*/
                     vertices[i + 8] = localPoint;
-                    /*verticeObjects2[i + 8].transform.localPosition = verticeObjects2[i+8].transform.InverseTransformPoint(hitInfo.point);*/
                 }
             }
-        
-            /*print(distance);
-
-            vertices[i + 8] = new Vector3(vertices[i + 8].x, distance / controlHeight, vertices[i + 8].z);
-            verticeObjects2[i + 8].transform.localPosition = new Vector3(vertices[i + 8].x, distance / controlHeight, vertices[i + 8].z);*/
         }
 
         CreateMesh();
@@ -257,21 +276,12 @@ public class Solution : ChemistryLogic
         {
             if (hitInfo.collider)
             {
-                /*print(hitInfo.collider.name);*/
                 if (hitInfo.distance * controlRatio < critHeight)
                 {
-                    /*print(hitInfo.distance / controlHeight);
-                    print(critHeight);*/
-                    /*print("crit");*/
-                    //CHANGE THIS BACK TO TRUE WHEN DONE DEBUGGING
                     critFlag = true;
                 }
                 else
                 {
-                    /*print(controlHeight);
-                    print(hitInfo.distance / controlHeight);
-                    print(critHeight);*/
-                    /*print("fine");*/
                     critFlag = false;
                 }
             }
@@ -283,10 +293,10 @@ public class Solution : ChemistryLogic
         //If I know the volume when height is 1. Then I can figure out the height of any given volume.
 
         //Beaker
-        //Volume of Beaker when height is 1 == TBD
-        if (chemManager.ContainerFlag)
+        //Volume of Beaker when height is 1 == estimate;
+        if (chemManager.ContainerObject.name == "Beaker")
         {
-            return 1f;
+            return chemManager.Volume1 / 80f;
         }
 
         //TestTube
@@ -295,7 +305,7 @@ public class Solution : ChemistryLogic
         {
             if (chemManager.Volume1 / 4.828428f - heightPH > 0.00001f)
             {
-                print(chemManager.Volume1 / 4.828428f - heightPH);
+                /*print(chemManager.Volume1 / 4.828428f - heightPH);*/
                 return (chemManager.Volume1 / 4.828428f);
             }
             else
@@ -308,15 +318,7 @@ public class Solution : ChemistryLogic
     private void findControlHeight()
     {
 
-        /*Vector3 original_rotation = SolutionObject.transform.eulerAngles;
-
-        SolutionObject.transform.eulerAngles = Vector3.zero;*/
-
         float distance = Vector3.Distance(verticeObjects[0].transform.position, verticeObjects[8].transform.position);
-
-        /*SolutionObject.transform.eulerAngles = original_rotation;*/
-
-/*        print(distance);*/
 
         controlHeight = distance;
 
@@ -350,7 +352,7 @@ public class Solution : ChemistryLogic
         
         foreach (Chemical chemical in ContainerChemicals.Keys)
         {
-/*            print(chemical.ChemicalName + " container chems");*/
+            print(chemical.ChemicalName + " container chems");
             colors.Add(chemical.ChemicalColor);
             if (chemical.ChemicalColor.a == 1.0f)
             {
@@ -375,7 +377,7 @@ public class Solution : ChemistryLogic
         }
 
         Color solutionColor = new Color(red, blue, green, alpha);
-
+    
         if (solutionColor != Color.clear)
         {
     /*        print("entering color");*/
@@ -391,17 +393,17 @@ public class Solution : ChemistryLogic
             }
             else
             {
-                if (OpaqueVolume/Volume < 0.5)
+                if (OpaqueVolume/Volume < 0.001f)
                 {
                     alpha = OpaqueVolume / Volume;
                 }
                 else
                 {
-                    alpha = 1 - (0.75f * TransparentVolume / Volume);
+                    alpha = 1 - (0.25f * TransparentVolume / Volume);
                 }
                 //Opaque Solutions
                 solutionColor = new Color(red, green, blue, alpha);
-                mr.material.SetColor("_EmissionColor", solutionColor * 0.25f);
+                mr.material.SetColor("_EmissionColor", solutionColor /** 0.25f*/);
             }
         }
 
@@ -409,12 +411,14 @@ public class Solution : ChemistryLogic
         {
             print("trans colorless");
             //Transparent Colorless Solutions
-            solutionColor = new Color(1f, 1f, 1f, 0.01f);
-            mr.material.SetColor("_EmissionColor", new Vector4(1.0f, 1.0f, 1.0f, 0f) * 0.25f);
+            solutionColor = new Color(1f, 1f, 1f, 0.2f);
+            /*mr.material.SetColor("_EmissionColor", solutionColor * -0.25f);*/
         }
 
         mr.material.renderQueue = 2450;
         mr.material.color = solutionColor;
+
+        solution_color = solutionColor;
 
     }
 
@@ -422,9 +426,18 @@ public class Solution : ChemistryLogic
     {
         while (true)
         {
-            yield return new WaitForSeconds(0.01f);
+            yield return new WaitForSeconds(0.1f);
+
+            ContainerChemicals = chemManager.ContainerChemicals1;
+
+            /*foreach (Chemical chemical in ContainerChemicals.Keys)
+            {
+                print(chemical.ChemicalName);
+            }*/
 
             height = getHeight();
+
+            print(height);
 
             for (int i = 0; i < 8; i++)
             {
@@ -437,9 +450,36 @@ public class Solution : ChemistryLogic
 
             if (heightPH != height)
             {
-                CreateMeshData();
-                CreateMesh();
-                SolutionColor();
+                /*if (tiltFlag == false)
+                {
+                    LowestPlane.GetComponent<MeshCollider>().enabled = true;
+                    LevelingPlane.GetComponent<MeshCollider>().enabled = true;
+                }
+                
+*/
+                heightPH = height;
+
+                if (height != 0f)
+                {
+
+                    if (mr.enabled == false)
+                    {
+                        mr.enabled = true;
+                    }
+                    print("changing height");
+                    CreateMeshData();
+                    CreateMesh();
+                    SolutionColor();
+                }
+            }
+
+            if (height == 0f)
+            {
+                mr.enabled = false;
+            }
+            else
+            {
+                mr.enabled = true;
             }
 
             heightPH = height;
@@ -466,53 +506,62 @@ public class Solution : ChemistryLogic
             /*CreateMeshData();
             CreateMesh();*/
 
- /*           for (int i = 0; i < 16; i++)
-            {
-                verticeObjects[i].transform.localPosition = mf.mesh.vertices[i];
-            }
-*/
-            
-
-
+            /*           for (int i = 0; i < 16; i++)
+                       {
+                           verticeObjects[i].transform.localPosition = mf.mesh.vertices[i];
+                       }
+           */
             AdjustLowestPlane();
 
-            findCritHeight();
-            findControlHeight();
-
-            /*print(controlHeight);*/
-
-            findCritFlag();
-
-            if (critFlag == false)
+            if (containerObject.name != "Beaker")
             {
-                /*mr.material.color = Color.red;*/
-                /*print("hey1");*/
-                AdjustTopVertices();
 
+                findCritHeight();
+                findControlHeight();
+
+                /*print(controlHeight);*/
+                if (tiltFlag == false)
+                {
+                    findCritFlag();
+                }
+
+                if (critFlag == false)
+                {
+                    AdjustTopVertices();
+                }
             }
-
-           
+            else
+            {
+                if (tiltFlag)
+                {
+                    clearSolution();
+                }
+            }
         }
-
     }
 
     private IEnumerator MyEvent2()
     {
         while (true)
         {
-            yield return new WaitForSeconds(0.35f);
+            yield return new WaitForSeconds(0.1f);
 
             height = getHeight();
 
-            if (critFlag)
+            if (tiltFlag)
             {
-                if (height >= 0.15)
+                if (height >= 0.2f)
                 {
+                    /*print("Hello");*/
                     if (mr.enabled == false)
                     {
                         mr.enabled = true;
                     }
-                    height -= 0.15f;
+
+                    /*chemManager.Volume1 -= 4.828428f / 5f;
+                    height -= 1f / 5f;*/
+
+
 
                     heightPH = height;
 
@@ -529,20 +578,87 @@ public class Solution : ChemistryLogic
                     LevelingPositioner.transform.localPosition = new Vector3(0.5f, heightPH, 1.2071f);
                     LevelingPlane.transform.position = LevelingPositioner.transform.position;
 
+                    GameObject droplet = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+                    droplet.transform.parent = transform;
+                    droplet.transform.localPosition = new Vector3(0f, 0f, -0.00066f);
+                    droplet.transform.localScale = new Vector3(0.00005f, 0.00005f, 0.00005f);
+                    droplet.layer = 8;
+
+                    droplet.AddComponent<Rigidbody>();
+
+                    droplet.GetComponent<Rigidbody>().collisionDetectionMode = CollisionDetectionMode.Continuous;
+
+                    MeshRenderer droplet_mr = droplet.GetComponent<MeshRenderer>();
+                    droplet_mr.material = Resources.Load<Material>("TransparentMaterial");
+                    droplet_mr.material.color = solution_color;
+                    droplet_mr.material.renderQueue = 2450;
+                    droplet_mr.material.EnableKeyword("_EMISSION");
+
+                    if (solution_color == Color.clear)
+                    {
+                        droplet_mr.material.SetColor("_EmissionColor", solution_color * -0.25f);
+                    }
+                    else
+                    {
+                        droplet_mr.material.SetColor("_EmissionColor", solution_color);
+                    }
+
+                    float droplet_Volume = 4.828428f / 5f;
+
+                    float ratio = droplet_Volume / chemManager.Volume1;
+
+                    Chemical[] arr = ContainerChemicals.Keys.ToArray();
+                    string name = "";
+                    for (int i = 0; i < arr.Length; i++)
+                    {
+                        float chemical_volume = ContainerChemicals[arr[i]] * ratio;
+                        name += arr[i].ChemicalName + "&" + (chemical_volume);
+
+                        if (i != arr.Length - 1)
+                        {
+                            name += "#";
+                        }
+
+                        ContainerChemicals[arr[i]] -= chemical_volume;
+                    }
+
+                    droplet.name = name;
+                    droplet.tag = "Chemical";
+
+                    chemManager.Volume1 -= droplet_Volume;
+                    height -= 1f / 5f;
+                    heightPH = height;
                 }
+
                 else
                 {
-                    mr.enabled = false;
 
-                    deleteFlag = true;
-
-                    break;
+                    clearSolution();
                 }
+                    /*break;*/
+                /*}*/
             }
         }
     }
 
    
+    private void clearSolution()
+    {
+        mr.enabled = false;
+
+        /*deleteFlag = true;*/
+
+        height = 0f;
+        heightPH = height;
+
+        chemManager.Volume1 = 0f;
+
+        ContainerChemicals.Clear();
+
+        chemManager.ContainerChemicals1 = ContainerChemicals;
+
+        critFlag = false;
+    }
     private float FindVolume()
     {
         float volume = 0f;
@@ -569,5 +685,85 @@ public class Solution : ChemistryLogic
     }
 
     #endregion
+    protected void SolutionColor(List<Chemical> ContainerChemicals, MeshRenderer SolutionRenderer)
+    {
+        List<Color> colors = new List<Color>();
+        SolutionRenderer.material = Resources.Load<Material>("TransparentMaterial");
+        SolutionRenderer.material.EnableKeyword("_EMISSION");
+        //Effective Volume for mixing Oppacity
+        int Volume = ContainerChemicals.Count;
 
+        //Effective Volume for mixing Color
+        int ColorVolume = 0;
+
+        //Counter for Opaque contents
+        int OpaqueCounter = 0;
+        //Counter for Transparent contents
+        int TransparentCounter = 0;
+
+        float red = 0f;
+        float green = 0f;
+        float blue = 0f;
+        float alpha = 0f;
+
+        foreach (Chemical chemical in ContainerChemicals)
+        {
+            colors.Add(chemical.ChemicalColor);
+            print(chemical.ChemicalName);
+        }
+
+        foreach (Color color in colors)
+        {
+            if (color != Color.clear)
+            {
+                ColorVolume++;
+            }
+            red += color.r;
+            green += color.g;
+            blue += color.b;
+            alpha += color.a;
+            if (color.a == 1.0f)
+            {
+                OpaqueCounter++;
+            }
+            else
+            {
+                TransparentCounter++;
+            }
+        }
+
+        print(alpha);
+        Color solutionColor = new Color(red, blue, green, alpha);
+
+        if (solutionColor != Color.clear)
+        {
+            print("entering color");
+            red /= ColorVolume;
+            green /= ColorVolume;
+            blue /= ColorVolume;
+            alpha /= Volume;
+            if (alpha <= 0.01)
+            {
+                //Transparent Colored Solutions
+                solutionColor = new Color(red, green, blue, alpha);
+                SolutionRenderer.material.SetColor("_EmissionColor", solutionColor);
+            }
+            else
+            {
+                //Opaque Solutions
+                alpha = 1 - (0.05f * TransparentCounter);
+                solutionColor = new Color(red, green, blue, alpha);
+            }
+        }
+        else
+        {
+            //Transparent Colorless Solutions
+            solutionColor = new Color(1f, 1f, 1f, 0f);
+            SolutionRenderer.material.SetColor("_EmissionColor", new Vector4(1.0f, 1.0f, 1.0f, 0f) * 0.25f);
+        }
+
+        SolutionRenderer.material.renderQueue = 2450;
+        SolutionRenderer.material.color = solutionColor;
+
+    }
 }

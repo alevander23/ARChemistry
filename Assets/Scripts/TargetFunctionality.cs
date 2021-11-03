@@ -124,7 +124,7 @@ public class TargetFunctionality : MainFlow
 
             pill.tag = this.gameObject.name;
 
-            pill.name = "6.5";
+            pill.name = "15.0";
 
            /* pill.GetComponent<Rigidbody>().isKinematic = false;*/
 
